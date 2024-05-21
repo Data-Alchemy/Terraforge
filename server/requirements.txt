@@ -1,0 +1,7 @@
+Flask
+Flask-CORS
+chromadb
+ollama
+pypdf
+pandas
+requests
