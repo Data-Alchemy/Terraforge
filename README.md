@@ -1,57 +1,83 @@
-# React Shadcn Starter
+# TerraForge
 
-React + Vite + TypeScript template for building apps with shadcn/ui.
+TerraForge is a web application built with React, TypeScript, Vite, and Flask that leverages Ollama, a locally hosted LLM inference service, to enable users to create infrastructure and interact with a private language model. The app is hosted on Static Web Apps and can also run locally.
 
-## Getting Started
+## Table of Contents
 
-```
-git clone https://github.com/hayyi2/react-shadcn-starter.git new-project
-cd new-project
-npm install
-npm run dev
-```
-
-## Getting Done
-
-- [x] Single page app with navigation and responsif layout
-
-- [x] Customable configuration `/config`
-
-- [x] Simple starting page/feature `/pages`
-
-- [x] Github action deploy github pages
-
-## Deploy `gh-pages`
-- change `basenameProd` in `/vite.config.ts`
-- create deploy key `GITHUB_TOKEN` in github `/settings/keys`
-- commit and push changes code
-- setup gihub pages to branch `gh-pages`
-- run action `Build & Deploy`
-
-### Auto Deploy
-- change file `.github/workflows/build-and-deploy.yml`
-- Comment on `workflow_dispatch`
-- Uncomment on `push`
-```yaml
-# on:
-#   workflow_dispatch:
-on:
-  push:
-    branches: ["main"]
-```
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
-- React + Vite + TypeScript
-- Tailwind CSS
+- **Infrastructure Creation**: Allows users to define and create infrastructure components.
+- **Private LLM Chat**: Users can interact with a private language model for various queries and assistance.
+- **Locally Hosted LLM**: Utilizes Ollama for local LLM inference, ensuring data privacy and quick response times.
+- **Static Web App Hosting**: The app is hosted on Static Web Apps for easy deployment and scalability.
+- **Local Development**: Can be run locally for development and testing.
+- **React + Vite + TypeScript**
+- **Tailwind CSS**
 - [react-router-dom](https://www.npmjs.com/package/react-router-dom)
 - [shadcn-ui](https://github.com/shadcn-ui/ui/)
 - [radix-ui/icons](https://www.radix-ui.com/icons)
 
+## Installation
+
+### Prerequisites
+
+- Node.js (version 14 or higher)
+- Python (version 3.10 or higher)
+- Flask
+
+### Steps
+
+1. **Clone the Repository**
+    ```sh
+    git clone
+    cd terraforge
+    ```
+
+2. **Install Node.js Dependencies**
+    ```sh
+    npm install
+    ```
+
+3. **Install Python Dependencies**
+    ```sh
+    cd ./server
+    pip install -r requirements.txt
+    ```
+
+4. **Start Flask Server**
+    ```sh
+    python app.py
+    ```
+
+5. **Start React App**
+    ```sh
+    npm run dev
+    ```
+
+## Usage
+
+### Running Locally
+
+- Ensure both the Flask server and the React app are running.
+- Open your browser and navigate to `http://localhost:3000`.
+
+### Hosting on Static Web Apps
+
+- Follow the [Static Web Apps documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/) to deploy the app.
+
+
+
 ## Project Structure
 
 ```
-react-shadcn-starter/
+Terraforge/
 ├── public/            # Public assets
 ├── src/               # Application source code
 │   ├── components/    # React components
