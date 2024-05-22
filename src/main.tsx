@@ -1,3 +1,4 @@
+// main.tsx
 import './polyfill'; // Import the polyfill at the top
 import React from 'react';
 import ReactDOM from 'react-dom';
