@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
-const basenameProd = '/react-shadcn-starter';
+const basenameProd = '/react-shadcn-starter/'; // Ensure the base option ends with a slash
 
 export default defineConfig(({ command }) => {
   const isProd = command === 'build';
@@ -29,7 +29,15 @@ export default defineConfig(({ command }) => {
       outDir: 'build', // Set the output directory for the build
       rollupOptions: {
         external: [], // External modules configuration
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              return id.toString().split('node_modules/')[1].split('/')[0].toString();
+            }
+          },
+        },
       },
+      chunkSizeWarningLimit: 1000, // Adjust chunk size warning limit
     },
   };
 });
