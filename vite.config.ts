@@ -1,21 +1,15 @@
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
-import commonjs from '@rollup/plugin-commonjs';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
 
-const basenameProd = '/react-shadcn-starter/';
+const basenameProd = '/'; // Adjust based on your hosting setup
 
 export default defineConfig(({ command }) => {
   const isProd = command === 'build';
 
   return {
-    base: isProd ? basenameProd : '',
-    plugins: [
-      react(),
-      commonjs(),
-      nodeResolve({ browser: true }),
-    ],
+    base: isProd ? basenameProd : '', // Set base URL for production
+    plugins: [react()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
@@ -27,8 +21,8 @@ export default defineConfig(({ command }) => {
     },
     build: {
       outDir: 'build',
+      chunkSizeWarningLimit: 1000,
       rollupOptions: {
-        external: [],
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
@@ -37,7 +31,9 @@ export default defineConfig(({ command }) => {
           },
         },
       },
-      chunkSizeWarningLimit: 1000,
+    },
+    optimizeDeps: {
+      include: ['@radix-ui/react-icons'],
     },
   };
 });

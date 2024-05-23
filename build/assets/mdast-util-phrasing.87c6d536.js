@@ -1,0 +1,1 @@
+import{c as e}from"./unist-util-is.e9b56bfe.js";const n=e(["break","delete","emphasis","footnote","footnoteReference","image","imageReference","inlineCode","inlineMath","link","linkReference","mdxJsxTextElement","mdxTextExpression","strong","text","textDirective"]);export{n as p};
