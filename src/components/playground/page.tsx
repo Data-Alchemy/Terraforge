@@ -15,7 +15,7 @@ import { FaReact } from 'react-icons/fa';
 import { FiThumbsUp, FiThumbsDown, FiShare2, FiGithub } from 'react-icons/fi';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import MarkdownRenderer from "./MarkdownRenderer"; // Import the Markdown renderer
-import Terraforge from '@/assets/Terraforge.png'; // Import the image
+import SeaSharp from '@/assets/Terraforge.png'; // Import the image
 import axios from 'axios';
 
 interface Message {
@@ -151,8 +151,8 @@ export default function PlaygroundPage() {
       <style>
         {spinAnimation}
       </style>
-      <div className="md:hidden">
-        <div className="flex flex-col space-y-4 p-4">
+      <div className="md:hidden p-4">
+        <div className="flex flex-col space-y-4">
           <Label htmlFor="instructions-mobile">Instructions</Label>
           <Textarea
             id="instructions-mobile"
@@ -180,6 +180,55 @@ export default function PlaygroundPage() {
             </Button>
           </div>
         </div>
+        <div className="mt-4 space-y-4">
+          {messages.length === 0 ? (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+              <img src={SeaSharp} alt="No messages" />
+            </div>
+          ) : (
+            messages.map((msg) => (
+              <React.Fragment key={msg.id}>
+                <div
+                  className="p-4"
+                  ref={(el) => {
+                    if (el) {
+                      messageRefs.current.set(msg.id, el);
+                    } else {
+                      messageRefs.current.delete(msg.id);
+                    }
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <FaReact className={isLoading ? "spin" : ""} style={{ marginRight: '8px', fontSize: '1em' }} />
+                    <p style={{ margin: 0 }}><strong>Q&A</strong></p>
+                  </div>
+                  <br />
+                  {msg.instructions && (
+                    <div>
+                    </div>
+                  )}
+                  <strong><p>Question</p></strong>
+                  <MarkdownRenderer content={msg.question} />
+                  {msg.answer && (
+                    <>
+                      <div style={{ marginTop: '16px' }}>
+                        <strong><p>Answer</p></strong>
+                        <MarkdownRenderer content={msg.answer} />
+                      </div>
+                    </>
+                  )}
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
+                    <FiThumbsUp style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Thumbs Up')} />
+                    <FiThumbsDown style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Thumbs Down')} />
+                    <FiShare2 style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Share')} />
+                    <FiGithub style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Git')} />
+                  </div>
+                </div>
+                <Separator />
+              </React.Fragment>
+            ))
+          )}
+        </div>
       </div>
       <div className="hidden h-full flex-col md:flex">
         <div className="container flex flex-col items-center justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
@@ -193,7 +242,7 @@ export default function PlaygroundPage() {
                   <div className="flex flex-col space-y-4">
                     {messages.length === 0 ? (
                       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                        <img src={Terraforge} alt="No messages" />
+                        <img src={SeaSharp} alt="No messages" />
                       </div>
                     ) : (
                       messages.map((msg) => (
@@ -215,8 +264,6 @@ export default function PlaygroundPage() {
                             <br />
                             {msg.instructions && (
                               <div>
-                                <p>Instructions:</p>
-                                <MarkdownRenderer content={msg.instructions} />
                               </div>
                             )}
                             <strong><p>Question</p></strong>
