@@ -151,7 +151,36 @@ export default function PlaygroundPage() {
       <style>
         {spinAnimation}
       </style>
-      <div className="md:hidden"></div>
+      <div className="md:hidden">
+        <div className="flex flex-col space-y-4 p-4">
+          <Label htmlFor="instructions-mobile">Instructions</Label>
+          <Textarea
+            id="instructions-mobile"
+            placeholder="Use these specific rules🧾"
+            value={instructionsValue}
+            onChange={(e) => setInstructionsValue(e.target.value)}
+          />
+          <Label htmlFor="input-mobile">Input</Label>
+          <Textarea
+            id="input-mobile"
+            placeholder="We are now live 🟢"
+            className="flex-1 lg:min-h-[100px] max-h-[200px] overflow-y-auto"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            style={{ resize: 'none' }}
+          />
+          <div className="flex items-center space-x-1">
+            <Button onClick={handleSubmit}>Submit</Button>
+            <Button variant="secondary">
+              <span className="sr-only">Show history</span>
+              <CounterClockwiseClockIcon className="h-4 w-4" />
+            </Button>
+            <Button variant="destructive" onClick={handleClearSession}>
+              Clear Session
+            </Button>
+          </div>
+        </div>
+      </div>
       <div className="hidden h-full flex-col md:flex">
         <div className="container flex flex-col items-center justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
           <div className="ml-auto flex w-full space-x-2 sm:justify-end"></div>
