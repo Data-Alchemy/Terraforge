@@ -36,6 +36,10 @@ export const mainMenu: NavItemWithChildren[] = [
         title: 'Integrations',
         to: 'integrations',
     },
+    {
+        title: 'DataCleanRoom',
+        to: 'DataCleanRoom',
+    },
 ]
 
 export const sideMenu: NavItemWithChildren[] = []

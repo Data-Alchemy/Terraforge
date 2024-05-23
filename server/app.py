@@ -69,85 +69,85 @@ def memory():
     logging.info(f"Memory saved: {relevant_memory}")
     return jsonify({'response': rag})
 
-@app.route('/api/completion', methods=['POST'])
-def completion():
-    question = request.json.get('question')
-    mem_embeddings = ollama.embeddings(prompt=question, model="nomic-embed-text")["embedding"]
-    memory_id = hashlib.sha256(question.encode('utf-8')).hexdigest()
-    logging.debug(f'Generated memory ID: {memory_id}')
-    memory_collection = mem_client.get_or_create_collection(name="memory")
-
-    try:
-        # get mem first
-
-        data = memory_collection.query(query_embeddings=[mem_embeddings], n_results=1)['documents'][0][0]
-
-    except:
-        data = 'No memory found'
-        logging.debug('No Memory Found')
-
-    try:
-        memory = memory_collection.add(
-            ids=[memory_id],
-            embeddings=[mem_embeddings],
-            documents=[question],
-            metadatas=[{'memory_id':1}]
-        )
-        
-        
-        
-    except Exception as e:
-        logging.error(f"Error retrieving memory data: {e}")
-        data = ''
-        return jsonify({'response': str(data)})
-    
-    return jsonify({'response': str(data)})
-
-if __name__ == '__main__':
-    app.run(debug=True, port=8080)
-
-
 # @app.route('/api/completion', methods=['POST'])
 # def completion():
-#     user_input = request.json.get('question')
-#     logging.debug(f"Received user input: {user_input}")
+#     question = request.json.get('question')
+#     mem_embeddings = ollama.embeddings(prompt=question, model="nomic-embed-text")["embedding"]
+#     memory_id = hashlib.sha256(question.encode('utf-8')).hexdigest()
+#     logging.debug(f'Generated memory ID: {memory_id}')
+#     memory_collection = mem_client.get_or_create_collection(name="memory")
 
-#     # see if there are any session memories #
 #     try:
-#         memory_item = completion_memory(user_input)
-#         logging.debug(f"Completion memory---: {memory_item }")
+#         # get mem first
+
+#         data = memory_collection.query(query_embeddings=[mem_embeddings], n_results=1)['documents'][0][0]
+
 #     except:
-#         logging.info('No memories found')
+#         data = 'No memory found'
+#         logging.debug('No Memory Found')
 
 #     try:
-#         response = ollama.embeddings(prompt=user_input, model="nomic-embed-text")
-#         user_embedding = response["embedding"]
-#     except Exception as e:
-#         logging.error(f"Error generating embedding: {e}")
-#         return jsonify({'response': 'Error generating embedding'}), 500
-
-#     try:
-#         results = collection.query(query_embeddings=[user_embedding], n_results=1)['documents'][0][0]
-#         relevant_document = results['documents'][0][0]
-#         rag = f'Using this data: {relevant_document}.'
-#     except Exception as e:
-#         logging.error(f"Error retrieving document: {e}")
-#         if len(memory_item) > 1:
-#             rag = f'Using this data: {memory_item}.'
-#         else:
-#             rag = ''
-
-#     try:
-#         output = ollama.generate(
-#             model="llama3",
-#             prompt=f"{rag} Respond to this prompt: {user_input}"
+#         memory = memory_collection.add(
+#             ids=[memory_id],
+#             embeddings=[mem_embeddings],
+#             documents=[question],
+#             metadatas=[{'memory_id':1}]
 #         )
-#         logging.info(f"Generated response: {output['response']}")
+        
+        
+        
 #     except Exception as e:
-#         logging.error(f"Error generating response: {e}")
-#         return jsonify({'response': 'Error generating response'}), 500
+#         logging.error(f"Error retrieving memory data: {e}")
+#         data = ''
+#         return jsonify({'response': str(data)})
+    
+#     return jsonify({'response': str(data)})
 
-#     return jsonify({'response': output['response']})
+# if __name__ == '__main__':
+#     app.run(debug=True, port=8080)
+
+
+@app.route('/api/completion', methods=['POST'])
+def completion():
+    user_input = request.json.get('question')
+    logging.debug(f"Received user input: {user_input}")
+
+    # see if there are any session memories #
+    try:
+        memory_item = ''#completion_memory(user_input)
+        logging.debug(f"Completion memory---: {memory_item }")
+    except:
+        logging.info('No memories found')
+
+    try:
+        response = ollama.embeddings(prompt=user_input, model="nomic-embed-text")
+        user_embedding = response["embedding"]
+    except Exception as e:
+        logging.error(f"Error generating embedding: {e}")
+        return jsonify({'response': 'Error generating embedding'}), 500
+
+    try:
+        results = collection.query(query_embeddings=[user_embedding], n_results=1)['documents'][0][0]
+        relevant_document = results['documents'][0][0]
+        rag = f'Using this data: {relevant_document}.'
+    except Exception as e:
+        logging.error(f"Error retrieving document: {e}")
+        if len(memory_item) > 1:
+            rag = f'Using this data: {memory_item}.'
+        else:
+            rag = ''
+
+    try:
+        output = ollama.generate(
+            model="llama3",
+            prompt=f"{rag} Respond to this prompt: {user_input}"
+        )
+        logging.info(f"Generated response: {output['response']}")
+    except Exception as e:
+        logging.error(f"Error generating response: {e}")
+        return jsonify({'response': 'Error generating response'}), 500
+
+    return jsonify({'response': output['response']})
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Documentation from "./pages/Documentation";
 import Integrations from "./pages/Integrations";
 import Examples from "./pages/Examples";
+import DataCleanRoom from "./pages/DataCleanRoom"
 
 export const router = createBrowserRouter([
     {
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
             {
                 path: "examples",
                 element: <Examples />,
+            },
+            {
+                path: "DataCleanRoom",
+                element: <DataCleanRoom />,
             },
         ],
     },

@@ -153,120 +153,96 @@ export default function PlaygroundPage() {
       </style>
       <div className="md:hidden"></div>
       <div className="hidden h-full flex-col md:flex">
-        <div className="container flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
+        <div className="container flex flex-col items-center justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
           <div className="ml-auto flex w-full space-x-2 sm:justify-end"></div>
         </div>
         <Tabs defaultValue="edit" className="flex-1">
           <div className="container h-full py-6">
-            <div className="grid h-full items-stretch gap-6 md:grid-cols-[65%_35%]">
-              <div className="hidden flex-col space-y-4 sm:flex md:order-2"></div>
-              <div className="md:order-1">
-                <TabsContent value="upload" className="mt-0 border-0 p-0">
-                  <div className="flex flex-col space-y-4">
-                    <div className="grid h-full grid-rows-2 gap-6 lg:grid-cols-2 lg:grid-rows-1">
-                      <Textarea
-                        placeholder="Upload your documents and ask questions"
-                        className="h-full min-h-[300px] lg:min-h-[700px] xl:min-h-[700px]"
-                      />
-                      <div className="rounded-md border bg-muted"></div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Button>Submit</Button>
-                      <Button variant="secondary">
-                        <span className="sr-only">Show history</span>
-                        <CounterClockwiseClockIcon className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </TabsContent>
+            <div className="flex flex-col h-full items-stretch gap-6">
+              <div className="flex-1 overflow-auto">
                 <TabsContent value="edit" className="mt-0 border-0 p-0">
                   <div className="flex flex-col space-y-4">
-                    <div className="grid h-full gap-6 lg:grid-cols-">
-                      <div className="mt-[21px] min-h-[400px] rounded-md lg:min-h-[700px] max-h-[500px] overflow-y-auto">
-                        {messages.length === 0 ? (
-                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                            <img src={Terraforge} alt="No messages" />
-                          </div>
-                        ) : (
-                          messages.map((msg) => (
-                            <React.Fragment key={msg.id}>
-                              <div
-                                className="p-4"
-                                ref={(el) => {
-                                  if (el) {
-                                    messageRefs.current.set(msg.id, el);
-                                  } else {
-                                    messageRefs.current.delete(msg.id);
-                                  }
-                                }}
-                              >
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                  <FaReact className={isLoading ? "spin" : ""} style={{ marginRight: '8px', fontSize: '1em' }} />
-                                  <p style={{ margin: 0 }}><strong>Q&A</strong></p>
-                                </div>
-                                <br />
-                                {msg.instructions && (
-                                  <div>
-                                    <p>Instructions:</p>
-                                    <MarkdownRenderer content={msg.instructions} />
-                                  </div>
-                                )}
-                                <strong><p>Question</p></strong>
-                                <MarkdownRenderer content={msg.question} />
-                                {msg.answer && (
-                                  <>
-                                    <div style={{ marginTop: '16px' }}>
-                                    <strong><p>Answer</p></strong>
-                                      <MarkdownRenderer content={msg.answer} />
-                                    </div>
-                                  </>
-                                )}
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
-                                  <FiThumbsUp style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Thumbs Up')} />
-                                  <FiThumbsDown style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Thumbs Down')} />
-                                  <FiShare2 style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Share')} />
-                                  <FiGithub style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Git')} />
-                                </div>
+                    {messages.length === 0 ? (
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                        <img src={Terraforge} alt="No messages" />
+                      </div>
+                    ) : (
+                      messages.map((msg) => (
+                        <React.Fragment key={msg.id}>
+                          <div
+                            className="p-4"
+                            ref={(el) => {
+                              if (el) {
+                                messageRefs.current.set(msg.id, el);
+                              } else {
+                                messageRefs.current.delete(msg.id);
+                              }
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <FaReact className={isLoading ? "spin" : ""} style={{ marginRight: '8px', fontSize: '1em' }} />
+                              <p style={{ margin: 0 }}><strong>Q&A</strong></p>
+                            </div>
+                            <br />
+                            {msg.instructions && (
+                              <div>
+                                <p>Instructions:</p>
+                                <MarkdownRenderer content={msg.instructions} />
                               </div>
-                              <Separator />
-                            </React.Fragment>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex flex-col space-y-4">
-                      <div className="flex flex-1 flex-col space-y-2">
-                        <div className="flex flex-col space-y-2">
-                          <Label htmlFor="instructions">Instructions</Label>
-                          <Textarea
-                            id="instructions"
-                            placeholder="Use these specific rules🧾"
-                            value={instructionsValue}
-                            onChange={(e) => setInstructionsValue(e.target.value)}
-                          />
-                        </div>
-                        <Label htmlFor="input">Input</Label>
-                        <Textarea
-                          id="input"
-                          placeholder="We are now live 🟢"
-                          className="flex-1 lg:min-h-[100px]"
-                          value={inputValue}
-                          onChange={(e) => setInputValue(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Button onClick={handleSubmit}>Submit</Button>
-                      <Button variant="secondary">
-                        <span className="sr-only">Show history</span>
-                        <CounterClockwiseClockIcon className="h-4 w-4" />
-                      </Button>
-                      <Button variant="destructive" onClick={handleClearSession}>
-                        Clear Session
-                      </Button>
-                    </div>
+                            )}
+                            <strong><p>Question</p></strong>
+                            <MarkdownRenderer content={msg.question} />
+                            {msg.answer && (
+                              <>
+                                <div style={{ marginTop: '16px' }}>
+                                  <strong><p>Answer</p></strong>
+                                  <MarkdownRenderer content={msg.answer} />
+                                </div>
+                              </>
+                            )}
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
+                              <FiThumbsUp style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Thumbs Up')} />
+                              <FiThumbsDown style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Thumbs Down')} />
+                              <FiShare2 style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Share')} />
+                              <FiGithub style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Git')} />
+                            </div>
+                          </div>
+                          <Separator />
+                        </React.Fragment>
+                      ))
+                    )}
                   </div>
                 </TabsContent>
+              </div>
+              <div className="flex-none w-full max-w-lg mx-auto">
+                <div className="flex flex-col space-y-4">
+                  <Label htmlFor="instructions">Instructions</Label>
+                  <Textarea
+                    id="instructions"
+                    placeholder="Use these specific rules🧾"
+                    value={instructionsValue}
+                    onChange={(e) => setInstructionsValue(e.target.value)}
+                  />
+                  <Label htmlFor="input">Input</Label>
+                  <Textarea
+                    id="input"
+                    placeholder="We are now live 🟢"
+                    className="flex-1 lg:min-h-[100px] max-h-[200px] overflow-y-auto"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    style={{ resize: 'none' }}
+                  />
+                  <div className="flex items-center space-x-1">
+                    <Button onClick={handleSubmit}>Submit</Button>
+                    <Button variant="secondary">
+                      <span className="sr-only">Show history</span>
+                      <CounterClockwiseClockIcon className="h-4 w-4" />
+                    </Button>
+                    <Button variant="destructive" onClick={handleClearSession}>
+                      Clear Session
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
