@@ -11,11 +11,11 @@ import { TopPSelector } from "./top-p-selector";
 import { models, types } from "./data/models";
 import { presets } from "./data/presets";
 import ChatOutput from "./ChatOutput";
-import { FaReact } from 'react-icons/fa';
+import { FaReact, FaLink } from 'react-icons/fa';
 import { FiThumbsUp, FiThumbsDown, FiShare2, FiGithub } from 'react-icons/fi';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import MarkdownRenderer from "./MarkdownRenderer"; // Import the Markdown renderer
-import SeaSharp from '@/assets/Terraforge.png'; // Import the image
+import Terraforge from '@/assets/Terraforge.png'; // Import the image
 import axios from 'axios';
 
 interface Message {
@@ -23,6 +23,7 @@ interface Message {
   question: string;
   instructions?: string;
   answer?: string; // Added answer field
+  sources?: string[]; // Added sources field
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -53,9 +54,11 @@ export default function PlaygroundPage() {
       await createMemory(memoryContent);
   
       const answer = await fetchAnswerFromLLM(newMessage.question);
+      const sources = await fetchSourcesFromLLM(newMessage.question); // Fetch sources
+  
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
-          msg.id === newMessage.id ? { ...msg, answer } : msg
+          msg.id === newMessage.id ? { ...msg, answer, sources } : msg
         )
       );
   
@@ -74,6 +77,12 @@ export default function PlaygroundPage() {
       console.error('Error sending the request', error);
       return 'Error fetching response';
     }
+  };
+
+  const fetchSourcesFromLLM = async (question: string): Promise<string[]> => {
+    // Mock function to simulate fetching sources
+    // Replace this with actual API call if available
+    return ["Source 1", "Source 2", "Source 3"];
   };
 
   const createMemory = async (memory: string): Promise<string> => {
@@ -146,90 +155,41 @@ export default function PlaygroundPage() {
     }
   `;
 
+  const sourceCardStyle: React.CSSProperties = {
+    position: 'relative',
+    backgroundColor: '#f0f0f0',
+    borderRadius: '4px',
+    padding: '4px',
+    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '4px',
+    gap: '4px',
+    fontSize: '12px'
+  };
+
+  const circleStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '-4px',
+    right: '-4px',
+    width: '16px',
+    height: '16px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '10px',
+    fontWeight: 'bold'
+  };
+
   return (
     <>
       <style>
         {spinAnimation}
       </style>
-      <div className="md:hidden p-4">
-        <div className="flex flex-col space-y-4">
-          <Label htmlFor="instructions-mobile">Instructions</Label>
-          <Textarea
-            id="instructions-mobile"
-            placeholder="Use these specific rules🧾"
-            value={instructionsValue}
-            onChange={(e) => setInstructionsValue(e.target.value)}
-          />
-          <Label htmlFor="input-mobile">Input</Label>
-          <Textarea
-            id="input-mobile"
-            placeholder="We are now live 🟢"
-            className="flex-1 lg:min-h-[100px] max-h-[200px] overflow-y-auto"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            style={{ resize: 'none' }}
-          />
-          <div className="flex items-center space-x-1">
-            <Button onClick={handleSubmit}>Submit</Button>
-            <Button variant="secondary">
-              <span className="sr-only">Show history</span>
-              <CounterClockwiseClockIcon className="h-4 w-4" />
-            </Button>
-            <Button variant="destructive" onClick={handleClearSession}>
-              Clear Session
-            </Button>
-          </div>
-        </div>
-        <div className="mt-4 space-y-4">
-          {messages.length === 0 ? (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-              <img src={SeaSharp} alt="No messages" />
-            </div>
-          ) : (
-            messages.map((msg) => (
-              <React.Fragment key={msg.id}>
-                <div
-                  className="p-4"
-                  ref={(el) => {
-                    if (el) {
-                      messageRefs.current.set(msg.id, el);
-                    } else {
-                      messageRefs.current.delete(msg.id);
-                    }
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <FaReact className={isLoading ? "spin" : ""} style={{ marginRight: '8px', fontSize: '1em' }} />
-                    <p style={{ margin: 0 }}><strong>Q&A</strong></p>
-                  </div>
-                  <br />
-                  {msg.instructions && (
-                    <div>
-                    </div>
-                  )}
-                  <strong><p>Question</p></strong>
-                  <MarkdownRenderer content={msg.question} />
-                  {msg.answer && (
-                    <>
-                      <div style={{ marginTop: '16px' }}>
-                        <strong><p>Answer</p></strong>
-                        <MarkdownRenderer content={msg.answer} />
-                      </div>
-                    </>
-                  )}
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
-                    <FiThumbsUp style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Thumbs Up')} />
-                    <FiThumbsDown style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Thumbs Down')} />
-                    <FiShare2 style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Share')} />
-                    <FiGithub style={{ cursor: 'pointer' }} onClick={() => handleAction(msg.id, 'Git')} />
-                  </div>
-                </div>
-                <Separator />
-              </React.Fragment>
-            ))
-          )}
-        </div>
-      </div>
+      <div className="md:hidden"></div>
       <div className="hidden h-full flex-col md:flex">
         <div className="container flex flex-col items-center justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
           <div className="ml-auto flex w-full space-x-2 sm:justify-end"></div>
@@ -242,7 +202,7 @@ export default function PlaygroundPage() {
                   <div className="flex flex-col space-y-4">
                     {messages.length === 0 ? (
                       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                        <img src={SeaSharp} alt="No messages" />
+                        <img src={Terraforge} alt="No messages" />
                       </div>
                     ) : (
                       messages.map((msg) => (
@@ -264,6 +224,8 @@ export default function PlaygroundPage() {
                             <br />
                             {msg.instructions && (
                               <div>
+                                <p>Instructions:</p>
+                                <MarkdownRenderer content={msg.instructions} />
                               </div>
                             )}
                             <strong><p>Question</p></strong>
@@ -273,6 +235,26 @@ export default function PlaygroundPage() {
                                 <div style={{ marginTop: '16px' }}>
                                   <strong><p>Answer</p></strong>
                                   <MarkdownRenderer content={msg.answer} />
+                                </div>
+                                <br></br>
+                                <div style={{ marginTop: '16px', padding: '8px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
+                                  <strong><p style={{ fontSize: '12px' }}>Sources</p></strong>
+                                  <div className="flex flex-wrap gap-1">
+                                    {msg.sources && msg.sources.length > 0 ? (
+                                      msg.sources.map((source, index) => (
+                                        <div key={index} style={sourceCardStyle}>
+                                          <FaLink style={{ marginRight: '4px', fontSize: '12px' }} />
+                                          <a href={source} target="_blank" rel="noopener noreferrer" style={{ fontSize: '12px' }}>{source}</a>
+                                          <div style={circleStyle}>{index + 1}</div>
+                                        </div>
+                                      ))
+                                    ) : (
+                                      <div style={sourceCardStyle}>
+                                        <FaLink style={{ marginRight: '4px', fontSize: '12px' }} />
+                                        No sources found
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               </>
                             )}
